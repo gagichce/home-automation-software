@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var api = require('./routes/api');
-
+var _ = require('underscore');
 var app = express();
 
 // view engine setup
@@ -44,5 +44,37 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+var net = require('net');
+var state = require('./services/StateService');
+
+var client = new net.Socket();
+
+client.connect(2001, '192.168.254.254', function() {
+	console.log('Connected');
+	//client.write('Hello, server! Love, Client.');
+});
+
+client.on('data', function(data) {
+	//console.log('Received: ' + data);
+});
+
+client.on('close', function() {
+	console.log('Connection closed');
+});
+
+state.onStateChange(function(e, data){
+	var devices = state.getDevices();
+  	
+  	_.each(devices, function(device){
+  		var value = 0;
+  		if(device.relay_one) value ++;
+  		if(device.relay_two) value += 2;
+
+  		var command = "t00180" + device.id.toString() + "0000000000000" + value.toString() + "\r";
+  		client.write(command);
+  	})
+});
+
 
 module.exports = app;

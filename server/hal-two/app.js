@@ -8,8 +8,30 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var api = require('./routes/api');
+var runtime = require('./helpers/RuntimeHelper');
 var _ = require('underscore');
 var app = express();
+
+/* --- Starting mode output*/
+console.log("------------------------------------------------");
+
+if(runtime.TEST && runtime.DEVELOP){
+  console.log("Running in both TEST and DEVELOP mode. Kinda pointless .. might want to change your config file.");
+}
+else if (!(runtime.TEST || runtime.DEVELOP)){
+  console.log("Running in normal operation mode.");
+}
+else {
+  if(runtime.TEST){
+    console.log("Running in TEST mode, this will trigger relays on a timer.");
+  }
+  if(runtime.DEVELOP){
+    console.log("Running in DEVELOP mode, this will refrain from connecting to remote CanBUS device.");
+  }
+}
+
+console.log("------------------------------------------------\n");
+/* --- Ending mode output*/
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -50,7 +72,7 @@ var state = require('./services/StateService');
 
 var client = new net.Socket();
 
-client.connect(2001, '192.168.254.254', function() {
+client.connect(2001, process.env.npm_package_config_remote_ip_address, function() {
 	console.log('Connected');
 	//client.write('Hello, server! Love, Client.');
 });

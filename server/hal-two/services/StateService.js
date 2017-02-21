@@ -5,7 +5,6 @@ var _ = require('underscore');
 var devices = [{id:1, relay_one: 0, relay_two:0 }, {id:2, relay_one: 0, relay_two:0 }];
 
 module.exports = {
-  
   getDevices: function(){
   	return devices;
   },

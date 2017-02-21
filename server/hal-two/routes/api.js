@@ -19,4 +19,8 @@ router.get('/:device/:relay/:state', function(req, res, next) {
   res.json(true);
 });
 
+router.get('/current-state', function(req, res, next) {
+  res.json(state.getDevices());
+});
+
 module.exports = router;

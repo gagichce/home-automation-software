@@ -9,6 +9,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var api = require('./routes/api');
 var runtime = require('./helpers/RuntimeHelper');
+var netcan = require('./services/NetcanService');
 var _ = require('underscore');
 var app = express();
 
@@ -67,36 +68,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-var net = require('net');
-var state = require('./services/StateService');
-
-var client = new net.Socket();
-
-client.connect(2001, process.env.npm_package_config_remote_ip_address, function() {
-	console.log('Connected');
-	//client.write('Hello, server! Love, Client.');
-});
-
-client.on('data', function(data) {
-	//console.log('Received: ' + data);
-});
-
-client.on('close', function() {
-	console.log('Connection closed');
-});
-
-state.onStateChange(function(e, data){
-	var devices = state.getDevices();
-  	
-  	_.each(devices, function(device){
-  		var value = 0;
-  		if(device.relay_one) value ++;
-  		if(device.relay_two) value += 2;
-
-  		var command = "t00180" + device.id.toString() + "0000000000000" + value.toString() + "\r";
-  		client.write(command);
-  	})
-});
-
+netcan.start();
 
 module.exports = app;

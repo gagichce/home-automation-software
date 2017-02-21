@@ -8,6 +8,10 @@ module.exports = {
   getDevices: function(){
   	return devices;
   },
+  setDevices: function(newDevices){
+    devices = newDevices;
+    evt.emit('myEvent', devices);
+  },
   updateState: function(data) {
     
     console.log("updating state: " + JSON.stringify(data))

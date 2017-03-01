@@ -56,12 +56,13 @@ var start = function(){
 
   state.onStateChange(function(e, data){
   	var devices = state.getDevices();
-    console.log(JSON.stringify(devices));
+    console.log("=======\ncurrent state: " + JSON.stringify(devices) + "\n=======");
     	_.each(devices, function(device){
 
         command = generateStateChangeMessage(device);
 
         if(!runtime.DEVELOP){
+          // console.log('writing: ' + command);
     		  client.write(command);
         }
 

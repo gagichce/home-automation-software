@@ -1,0 +1,13 @@
+{
+  "host": "localhost",
+  "port": 3030,
+  "sqlite": "../data/halTwoFeathers.sqlite",
+  "public": "../public/",
+  "auth": {
+    "idField": "id",
+    "token": {
+      "secret": "4P33oEGx04efKb7Y9Po1T2wpY5X1PZJrkwGvhU8jk5FbVDTwpfuC/oWQSJdAqWZ3sV3rM5K27p6rXZzYFi5rHQ=="
+    },
+    "local": {}
+  }
+}

@@ -10,153 +10,151 @@
   <link href="css/style.css" rel="stylesheet">
   <link href="css/themify-icons.css" rel="stylesheet">
   <link href='css/dosis-font.css' rel='stylesheet' type='text/css'>
-
-
   <script type="text/javascript" src="../scripts/socket.io.js"></script>
   <script type="text/javascript" src="../scripts/core.min.js"></script>
   <script type="text/javascript" src="../scripts/feathers.js"></script>
   <script type="text/javascript" src="js/jquery.min.js"></script>
   <script type="text/javascript">
-   var statusOff = "img/BlackLight.png"
-    var statusOn = "img/GreenLight.png"
-    var statusPending = "img/YellowLight.png"
-    var statusError = "img/RedLight.png"
-    var socket = io('http://192.168.254.5:3030');
-    var DEVICE_CHANGE = {"123": 0, "124" : 0}
-    var app = feathers()
-    .configure(feathers.hooks())
-    .configure(feathers.socketio(socket));
-
-    var messageService = app.service('devices');
-   
-    messageService.on('updated', function(message) {
-      console.log('Someone modified device:', message);
-      console.log('Status R1:',message.relay_one);
-      var device = document.getElementById('device'+message.id+'_image');     
-      switch(message.relay_one){
-        case 0:
-          device.src=statusOff;  
-          console.log("Set State to 0");
-          //device.state=0;
-          $('#device'+message.id+'_image').data("state","0");
-          break;        
-        case 1:
-          device.src=statusOn;
-         // device.state=1;
-          $('#device'+message.id+'_image').data("state","1");      
-          break;
-        case 2:
-          device.src=statusPending;
-          //device.state=2;
-          $('#device'+message.id+'_image').data("state","2");
-          break;
-        case 3:
-          device.src=statusError;
-          //device.state=3;
-          $('#device'+message.id+'_image').data("state","3");
-          break;        
-      }
-      DEVICE_CHANGE[message.id] = message.relay_one;
-    });    
-  </script>
-<script type="text/javascript">
-  function _ajax_request(url, data, callback, method) {
-    return jQuery.ajax({
+    function _ajax_request(url, data, callback, method) {
+      return jQuery.ajax({
         url: url,
         type: method,
         data: data,
         success: callback
-    });
-}
-jQuery.extend({
-    put: function(url, data, callback) {
+      });
+    }
+    jQuery.extend({
+      put: function (url, data, callback) {
         return _ajax_request(url, data, callback, 'PUT');
-}});  
-</script>
-  <script>
-function myFunction(tag) {
-  var device={};  
-  var device_id= tag.id.substring(6,tag.id.indexOf('_'));
-  console.log('current state:' ,$(tag).data("state"));
-  switch(DEVICE_CHANGE[device_id]){
-    case 0:
-      device.relay_one = 2;
-    break;
-    case 1:
-      device.relay_one = 0;
-    break;
-    case 2:
-      device.relay_one = 3;
-    break;
-    case 3:
-      device.relay_one = 0;
-    break;
-  }  
-  device.relay_two = 0; 
-    console.log(device);
-    console.log(tag, "Clicked!");
-$.ajax({
-    type: 'PUT',
-    headers: {
-        'Content-Type':'application/json'
-    },
-    url: 'http://192.168.254.5:3030/devices/'+device_id,
-    data: JSON.stringify(device)
-});
-console.log("Sending:",tag.id);
-}
+      }
+    });
+  </script>
 
-</script>
+  <script type="text/javascript">
+    var statusOff = "img/BlackLight.png"
+    var statusOn = "img/GreenLight.png"
+    var statusPending = "img/YellowLight.png"
+    var statusError = "img/RedLight.png"
+    var statusSet = [statusOff, statusOn, statusPending, statusError];
+
+    var deviceState = {"123": 0, "124": 0, "125":0}
+    var deviceNextState = [2,0,3,0];
+    var ip = location.host;
+    //var socket = io('http://192.168.254.5:3030');
+    var socket = io(ip);
+
+    var app = feathers()
+      .configure(feathers.hooks())
+      .configure(feathers.socketio(socket));
+
+    var messageService = app.service('devices');
+
+    messageService.on('updated', function (message) {
+      console.log('Someone modified device:', message);
+      console.log('Status R1:', message.relay_one);
+      var device = document.getElementById('device' + message.id + '_image');
+      /*switch (message.relay_one) {
+        case 0:
+          device.src = statusOff;
+          break;
+        case 1:
+          device.src = statusOn;
+          break;
+        case 2:
+          device.src = statusPending;
+          break;
+        case 3:
+          device.src = statusError;
+          break;
+      }*/
+      device.src = statusSet[message.relay_one];
+      deviceState[message.id] = message.relay_one;
+    });
+  </script>
+
+  <script>
+    function changeState(tag) {
+      var device = {};
+      var device_id = tag.id.substring(6, tag.id.indexOf('_'));
+      /*switch (deviceState[device_id]) {
+        case 0:
+          device.relay_one = 2;
+          break;
+        case 1:
+          device.relay_one = 0;
+          break;
+        case 2:
+          device.relay_one = 3;
+          break;
+        case 3:
+          device.relay_one = 0;
+          break;
+      }*/
+      device.relay_one = deviceNextState[deviceState[device_id]];
+      device.relay_two = 0;
+      $.ajax({
+        type: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        //url: 'http://192.168.254.5:3030/devices/' + device_id,
+        url: 'http://'+ip +'/devices/'+ device_id,
+        data: JSON.stringify(device)
+      });
+      console.log("Sending:", tag.id);
+    }
+
+  </script>
 </head>
 
-<body >
-  <div class="row me-row content-ct speaker" id="speakers">
-    <h2 class="row-title">HAL 2.0</h2>
-    <div id="device123" class="col-md-4 col-sm-6 feature">
-      <img data-state="1" onclick = "myFunction(this)" id = "device123_image"  src="img/BlackLight.png" class="speaker-img" >
-      <h3>Hallway</h3>
-      <p>Bottom of Stairs</p>           
-    </div>
-    <div id="device124" class="col-md-4 col-sm-6 feature">
-      <img data-state="1" onclick = "myFunction(this)" id = "device124_image" src="img/BlackLight.png" class="speaker-img">
-      <h3>Hallway</h3>
-      <p>Top of Stairs</p>            
-    </div>
-    <div  id="device125" class="col-md-4 col-sm-6 feature">
-      <img data-state="1" onclick = "myFunction(this)" id="device125_image"src="img/BlackLight.png" class="speaker-img">
-      <h3>Hallway</h3>
-      <p>Front Entrance</p>           
-    </div>
-    <div class="col-md-4 col-sm-6 feature">
-      <img src="img/BlackLight.png" class="speaker-img">
-      <h3>Bedroom</h3>
-      <p>Bedroom Light</p>         
-    </div>
-    <div class="col-md-4 col-sm-6 feature">
-      <img src="img/BlackLight.png" class="speaker-img">
-      <h3>Bedroom</h3>
-      <p>Closet Light</p>         
-    </div>
-    <div class="col-md-4 col-sm-6 feature">
-      <img src="img/BlackLight.png" class="speaker-img">
-      <h3>Bedroom</h3>
-      <p>Bedside Lamp</p>           
-    </div>
-    <div class="col-md-4 col-sm-6 feature">
-      <img src="img/BlackLight.png" class="speaker-img">
-      <h3>Bathroom</h3>
-      <p>Bathroom Light</p>         
-    </div>
-    <div class="col-md-4 col-sm-6 feature">
-      <img src="img/BlackLight.png" class="speaker-img">
-      <h3>Bathroom</h3>
-      <p>Shower Light</p>         
-    </div>
-    <div class="col-md-4 col-sm-6 feature">
-      <img src="img/BlackLight.png" class="speaker-img">
-      <h3>Bathroom</h3>
-      <p>Bathroom Fan</p>           
-    </div>
+<body>
+<div class="row me-row content-ct speaker" id="speakers">
+  <h2 class="row-title">HAL 2.0</h2>
+  <div id="device123" class="col-md-4 col-sm-6 feature">
+    <img onclick="changeState(this)" id="device123_image" src="img/BlackLight.png" class="speaker-img">
+    <h3>Hallway</h3>
+    <p>Bottom of Stairs</p>
   </div>
+  <div id="device124" class="col-md-4 col-sm-6 feature">
+    <img onclick="changeState(this)" id="device124_image" src="img/BlackLight.png" class="speaker-img">
+    <h3>Hallway</h3>
+    <p>Top of Stairs</p>
+  </div>
+  <div id="device125" class="col-md-4 col-sm-6 feature">
+    <img  onclick="changeState(this)" id="device125_image" src="img/BlackLight.png" class="speaker-img">
+    <h3>Hallway</h3>
+    <p>Front Entrance</p>
+  </div>
+  <div class="col-md-4 col-sm-6 feature">
+    <img src="img/BlackLight.png" class="speaker-img">
+    <h3>Bedroom</h3>
+    <p>Bedroom Light</p>
+  </div>
+  <div class="col-md-4 col-sm-6 feature">
+    <img src="img/BlackLight.png" class="speaker-img">
+    <h3>Bedroom</h3>
+    <p>Closet Light</p>
+  </div>
+  <div class="col-md-4 col-sm-6 feature">
+    <img src="img/BlackLight.png" class="speaker-img">
+    <h3>Bedroom</h3>
+    <p>Bedside Lamp</p>
+  </div>
+  <div class="col-md-4 col-sm-6 feature">
+    <img src="img/BlackLight.png" class="speaker-img">
+    <h3>Bathroom</h3>
+    <p>Bathroom Light</p>
+  </div>
+  <div class="col-md-4 col-sm-6 feature">
+    <img src="img/BlackLight.png" class="speaker-img">
+    <h3>Bathroom</h3>
+    <p>Shower Light</p>
+  </div>
+  <div class="col-md-4 col-sm-6 feature">
+    <img src="img/BlackLight.png" class="speaker-img">
+    <h3>Bathroom</h3>
+    <p>Bathroom Fan</p>
+  </div>
+</div>
 </div>
 </body>

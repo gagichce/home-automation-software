@@ -12,7 +12,11 @@ module.exports = function(){
     paginate: {
       default: 5,
       max: 25
-    }
+    },
+    //events = ["updated", "pending"],
+    // pending(id,data){
+    //   return Promise.resolve(data);
+    // }
   };
 
   // Initialize our service with any options it requires

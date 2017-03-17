@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,7 +25,7 @@
       });
     }
     jQuery.extend({
-      put: function (url, data, callback) {
+      put: function(url, data, callback) {
         return _ajax_request(url, data, callback, 'PUT');
       }
     });
@@ -36,9 +37,12 @@
     var statusPending = "img/YellowLight.png"
     var statusError = "img/RedLight.png"
     var statusSet = [statusOff, statusOn, statusPending, statusError];
-
-    var deviceState = {"123": 0, "124": 0, "125":0}
-    var deviceNextState = [2,0,3,0];
+    var deviceState = {
+      "123": 0,
+      "124": 0,
+      "125": 0
+    }
+    var deviceNextState = [2, 0, 3, 0];
     var ip = location.host;
     //var socket = io('http://192.168.254.5:3030');
     var socket = io(ip);
@@ -49,7 +53,7 @@
 
     var messageService = app.service('devices');
 
-    messageService.on('updated', function (message) {
+    messageService.on('updated', function(message) {
       console.log('Someone modified device:', message);
       console.log('Status R1:', message.relay_one);
       var device = document.getElementById('device' + message.id + '_image');
@@ -98,63 +102,62 @@
           'Content-Type': 'application/json'
         },
         //url: 'http://192.168.254.5:3030/devices/' + device_id,
-        url: 'http://'+ip +'/devices/'+ device_id,
+        url: 'http://' + ip + '/devices/' + device_id,
         data: JSON.stringify(device)
       });
       console.log("Sending:", tag.id);
     }
-
   </script>
 </head>
 
 <body>
-<div class="row me-row content-ct speaker" id="speakers">
-  <h2 class="row-title">HAL 2.0</h2>
-  <div id="device123" class="col-md-4 col-sm-6 feature">
-    <img onclick="changeState(this)" id="device123_image" src="img/BlackLight.png" class="speaker-img">
-    <h3>Hallway</h3>
-    <p>Bottom of Stairs</p>
+  <div class="row me-row content-ct speaker" id="speakers">
+    <h2 class="row-title">HAL 2.0</h2>
+    <div id="device123" class="col-md-4 col-sm-6 feature">
+      <img onclick="changeState(this)" id="device123_image" src="img/BlackLight.png" class="speaker-img">
+      <h3>Hallway</h3>
+      <p>Bottom of Stairs</p>
+    </div>
+    <div id="device124" class="col-md-4 col-sm-6 feature">
+      <img onclick="changeState(this)" id="device124_image" src="img/BlackLight.png" class="speaker-img">
+      <h3>Hallway</h3>
+      <p>Top of Stairs</p>
+    </div>
+    <div id="device125" class="col-md-4 col-sm-6 feature">
+      <img onclick="changeState(this)" id="device125_image" src="img/BlackLight.png" class="speaker-img">
+      <h3>Hallway</h3>
+      <p>Front Entrance</p>
+    </div>
+    <div class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Bedroom</h3>
+      <p>Bedroom Light</p>
+    </div>
+    <div class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Bedroom</h3>
+      <p>Closet Light</p>
+    </div>
+    <div class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Bedroom</h3>
+      <p>Bedside Lamp</p>
+    </div>
+    <div class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Bathroom</h3>
+      <p>Bathroom Light</p>
+    </div>
+    <div class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Bathroom</h3>
+      <p>Shower Light</p>
+    </div>
+    <div class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Bathroom</h3>
+      <p>Bathroom Fan</p>
+    </div>
   </div>
-  <div id="device124" class="col-md-4 col-sm-6 feature">
-    <img onclick="changeState(this)" id="device124_image" src="img/BlackLight.png" class="speaker-img">
-    <h3>Hallway</h3>
-    <p>Top of Stairs</p>
   </div>
-  <div id="device125" class="col-md-4 col-sm-6 feature">
-    <img  onclick="changeState(this)" id="device125_image" src="img/BlackLight.png" class="speaker-img">
-    <h3>Hallway</h3>
-    <p>Front Entrance</p>
-  </div>
-  <div class="col-md-4 col-sm-6 feature">
-    <img src="img/BlackLight.png" class="speaker-img">
-    <h3>Bedroom</h3>
-    <p>Bedroom Light</p>
-  </div>
-  <div class="col-md-4 col-sm-6 feature">
-    <img src="img/BlackLight.png" class="speaker-img">
-    <h3>Bedroom</h3>
-    <p>Closet Light</p>
-  </div>
-  <div class="col-md-4 col-sm-6 feature">
-    <img src="img/BlackLight.png" class="speaker-img">
-    <h3>Bedroom</h3>
-    <p>Bedside Lamp</p>
-  </div>
-  <div class="col-md-4 col-sm-6 feature">
-    <img src="img/BlackLight.png" class="speaker-img">
-    <h3>Bathroom</h3>
-    <p>Bathroom Light</p>
-  </div>
-  <div class="col-md-4 col-sm-6 feature">
-    <img src="img/BlackLight.png" class="speaker-img">
-    <h3>Bathroom</h3>
-    <p>Shower Light</p>
-  </div>
-  <div class="col-md-4 col-sm-6 feature">
-    <img src="img/BlackLight.png" class="speaker-img">
-    <h3>Bathroom</h3>
-    <p>Bathroom Fan</p>
-  </div>
-</div>
-</div>
 </body>

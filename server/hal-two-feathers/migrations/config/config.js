@@ -3,8 +3,8 @@ const env = process.env.NODE_ENV || 'development';
 
 module.exports = {
   [env]: {
-    url: app.get('db_url'),
-    dialect: app.get('db_dialect'),
+    storage: app.get('sqlite'),
+    dialect: 'sqlite',
     migrationStorageTableName: '_migrations'
   }
 };

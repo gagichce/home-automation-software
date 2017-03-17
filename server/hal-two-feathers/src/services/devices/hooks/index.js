@@ -41,6 +41,6 @@ exports.after = {
   get: [],
   create: [],
   update: [myHook()],
-  patch: [],
+  patch: [myHook()],
   remove: []
 };

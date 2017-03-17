@@ -4,7 +4,7 @@
 // 
 // See http://docs.sequelizejs.com/en/latest/docs/models-definition/
 // for more of what you can do here.
-
+var rooms = require('../rooms/rooms-model');
 const Sequelize = require('sequelize');
 
 module.exports = function(sequelize) {
@@ -14,18 +14,29 @@ module.exports = function(sequelize) {
       allowNull : false,
       primaryKey: true
     },
-    relay_one:{
+    state:{
       type: Sequelize.INTEGER,
       allowNull : false
     },
-    relay_two:{
-      type: Sequelize.INTEGER,
+    roomId:{
+      type: Sequelize.UUID,
+        references: {
+          model: 'rooms',
+          key : 'id'
+        }
+    },
+    name:{
+      type: Sequelize.STRING,
       allowNull : false
     }
   }, {
-    freezeTableName: true
+    freezeTableName: true,
+    classMethods: {
+      associate(models) {
+        devices.belongsTo(models.rooms);
+      },
+    }
   });
-
   devices.sync();
 
   return devices;

@@ -1,5 +1,7 @@
 'use strict';
 
+const patterns = require('./patterns');
+
 const events = require('./events');
 
 const devices = require('./devices');
@@ -36,4 +38,5 @@ module.exports = function() {
   sequelize.sync();
 
   app.configure(events);
+  app.configure(patterns);
 };

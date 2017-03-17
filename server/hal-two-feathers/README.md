@@ -2,10 +2,6 @@
 
 > feathers variant
 
-## About
-
-This project uses [Feathers](http://feathersjs.com). An open source web framework for building modern real-time applications.
-
 ## Getting Started
 
 Getting up and running is as easy as 1, 2, 3.
@@ -21,6 +17,12 @@ Getting up and running is as easy as 1, 2, 3.
     
     ```
     npm start
+    ```
+
+4. To build (or rebuild after deleting)
+    
+    ```
+    npm run-script db
     ```
 
 ## Testing

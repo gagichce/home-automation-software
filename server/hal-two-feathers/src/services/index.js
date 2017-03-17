@@ -1,5 +1,7 @@
 'use strict';
 
+const events = require('./events');
+
 const devices = require('./devices');
 const rooms = require('./rooms');
 const authentication = require('./authentication');
@@ -31,6 +33,7 @@ module.exports = function() {
     .filter(model => model.associate)
     .forEach(model => model.associate(models));
 
-sequelize.sync();
+  sequelize.sync();
 
+  app.configure(events);
 };

@@ -25,28 +25,28 @@ module.exports = {
       updatedAt: new Date()
     }]);
     queryInterface.bulkInsert('devices',[{
-      id: 1,
+      id: 16,
       name: 'test device 1',
       state: 0,
       roomId: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     },{
-      id: 2,
+      id: 17,
       name: 'test device 2',
       state: 0,
       roomId: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     },{
-      id: 3,
+      id: 32,
       name: 'test device 3',
       state: 0,
       roomId: 2,
       createdAt: new Date(),
       updatedAt: new Date()
     },{
-      id: 4,
+      id: 33,
       name: 'test device 4',
       state: 0,
       roomId: 2,

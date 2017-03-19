@@ -3,6 +3,11 @@
   "port": 3030,
   "sqlite": "../data/halTwoFeathers.sqlite",
   "public": "../public/",
+
+  "development_mode": false,
+  "test_mode": false,
+  "remote_ip_address": "192.168.254.254",
+  
   "auth": {
     "idField": "id",
     "token": {

@@ -13,8 +13,9 @@ const bodyParser = require('body-parser');
 const socketio = require('feathers-socketio');
 const middleware = require('./middleware');
 const services = require('./services');
-
 const app = feathers();
+
+
 
 app.configure(configuration(path.join(__dirname, '..')));
 
@@ -31,4 +32,22 @@ app.use(compress())
   .configure(services)
   .configure(middleware);
 
+
+
 module.exports = app;
+
+const netcan = require('./service/NetcanService');
+
+netcan.start(data => {
+  if(data.indexOf("t101") == -1)
+    console.log('Received: ' + data);
+    if(data.indexOf("t0023") == 0){
+      var service = app.service('devices');
+      console.log(parseInt(data.toString().substring(5, 9), 16));
+      service.get(parseInt(data.toString().substring(5, 9), 16)).then(result =>{
+          if(result.state == 2 && parseInt(data.toString().substring(10,11), 16) == 1){
+            service.patch(result.id, {state: 1});
+          }
+      });
+    }
+});

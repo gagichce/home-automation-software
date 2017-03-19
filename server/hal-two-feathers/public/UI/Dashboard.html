@@ -35,9 +35,10 @@
     var statusError = "img/RedLight.png"
     var statusSet = [statusOff, statusOn, statusPending, statusError];
     var deviceState = {
-      "123": 0,
-      "124": 0,
-      "125": 0
+      "16": 0,
+      "17": 0,
+      "32": 0,
+      "33": 0
     }
     var deviceNextState = [2, 0, 3, 0];
     var ip = location.host;
@@ -76,22 +77,22 @@
 <body>
   <div class="row me-row content-ct speaker" id="speakers">
     <h2 class="row-title">HAL 2.0</h2>
-    <div id="device1" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
+    <div id="device16" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
       <img src="img/BlackLight.png" class="speaker-img">
       <h3>Hallway</h3>
       <p>Bottom of Stairs</p>
     </div>
-    <div id="device2" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
+    <div id="device17" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
       <img src="img/BlackLight.png" class="speaker-img">
       <h3>Hallway</h3>
       <p>Top of Stairs</p>
     </div>
-    <div id="device3" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
+    <div id="device32" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
       <img src="img/BlackLight.png" class="speaker-img">
       <h3>Hallway</h3>
       <p>Front Entrance</p>
     </div>
-    <div id="device4" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
+    <div id="device33" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
       <img src="img/BlackLight.png" class="speaker-img">
       <h3>Bedroom</h3>
       <p>Bedroom Light</p>

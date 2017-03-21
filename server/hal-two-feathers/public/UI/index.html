@@ -5,8 +5,6 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Home Automation Labs</title>
-
-  <!-- Bootstrap -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
   <link href="css/themify-icons.css" rel="stylesheet">
@@ -30,7 +28,6 @@
       }
     });
   </script>
-
   <script type="text/javascript">
     var statusOff = "img/BlackLight.png"
     var statusOn = "img/GreenLight.png"
@@ -38,74 +35,41 @@
     var statusError = "img/RedLight.png"
     var statusSet = [statusOff, statusOn, statusPending, statusError];
     var deviceState = {
-      "123": 0,
-      "124": 0,
-      "125": 0
+      "16": 0,
+      "17": 0,
+      "32": 0,
+      "33": 0
     }
     var deviceNextState = [2, 0, 3, 0];
     var ip = location.host;
-    //var socket = io('http://192.168.254.5:3030');
     var socket = io(ip);
-
     var app = feathers()
       .configure(feathers.hooks())
       .configure(feathers.socketio(socket));
-
     var messageService = app.service('devices');
-
-    messageService.on('updated', function(message) {
+    messageService.on('patched', function(message) {
       console.log('Someone modified device:', message);
-      console.log('Status R1:', message.relay_one);
-      var device = document.getElementById('device' + message.id + '_image');
-      /*switch (message.relay_one) {
-        case 0:
-          device.src = statusOff;
-          break;
-        case 1:
-          device.src = statusOn;
-          break;
-        case 2:
-          device.src = statusPending;
-          break;
-        case 3:
-          device.src = statusError;
-          break;
-      }*/
-      device.src = statusSet[message.relay_one];
-      deviceState[message.id] = message.relay_one;
+      console.log('Status:', message.state + " ID:" + message.id);
+      var device = document.getElementById('device' + message.id).getElementsByTagName("img")[0];
+      device.src = statusSet[message.state];
+      deviceState[message.id] = message.state;
     });
   </script>
-
   <script>
     function changeState(tag) {
+      var device_id = tag.id.substring(6);
       var device = {};
-      var device_id = tag.id.substring(6, tag.id.indexOf('_'));
-      /*switch (deviceState[device_id]) {
-        case 0:
-          device.relay_one = 2;
-          break;
-        case 1:
-          device.relay_one = 0;
-          break;
-        case 2:
-          device.relay_one = 3;
-          break;
-        case 3:
-          device.relay_one = 0;
-          break;
-      }*/
-      device.relay_one = deviceNextState[deviceState[device_id]];
-      device.relay_two = 0;
+      //  device.state=1;
+      device.state = deviceNextState[deviceState[device_id]];
       $.ajax({
-        type: 'PUT',
+        type: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
         },
-        //url: 'http://192.168.254.5:3030/devices/' + device_id,
         url: 'http://' + ip + '/devices/' + device_id,
         data: JSON.stringify(device)
       });
-      console.log("Sending:", tag.id);
+      console.log("Patch: /devices/" + device_id + " state:" + device.state);
     }
   </script>
 </head>
@@ -113,22 +77,22 @@
 <body>
   <div class="row me-row content-ct speaker" id="speakers">
     <h2 class="row-title">HAL 2.0</h2>
-    <div id="device123" class="col-md-4 col-sm-6 feature">
-      <img onclick="changeState(this)" id="device123_image" src="img/BlackLight.png" class="speaker-img">
+    <div id="device16" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
       <h3>Hallway</h3>
       <p>Bottom of Stairs</p>
     </div>
-    <div id="device124" class="col-md-4 col-sm-6 feature">
-      <img onclick="changeState(this)" id="device124_image" src="img/BlackLight.png" class="speaker-img">
+    <div id="device17" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
       <h3>Hallway</h3>
       <p>Top of Stairs</p>
     </div>
-    <div id="device125" class="col-md-4 col-sm-6 feature">
-      <img onclick="changeState(this)" id="device125_image" src="img/BlackLight.png" class="speaker-img">
+    <div id="device32" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
       <h3>Hallway</h3>
       <p>Front Entrance</p>
     </div>
-    <div class="col-md-4 col-sm-6 feature">
+    <div id="device33" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
       <img src="img/BlackLight.png" class="speaker-img">
       <h3>Bedroom</h3>
       <p>Bedroom Light</p>

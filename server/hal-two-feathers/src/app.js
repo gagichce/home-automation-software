@@ -14,8 +14,8 @@ const socketio = require('feathers-socketio');
 const middleware = require('./middleware');
 const services = require('./services');
 const app = feathers();
-
-
+var _ = require('underscore');
+var counter = 0;
 
 app.configure(configuration(path.join(__dirname, '..')));
 
@@ -31,8 +31,6 @@ app.use(compress())
   .configure(socketio())
   .configure(services)
   .configure(middleware);
-
-
 
 module.exports = app;
 
@@ -51,3 +49,29 @@ netcan.start(data => {
       });
     }
 });
+
+if(app.get("test_mode")){
+  var devices = app.service("devices");
+  setInterval(function(){
+    devices.find({}).then(results =>{
+      //console.log(results.data.length);
+        for (var i = 0; i < results.data.length; i++){
+          var device = results.data[i];
+          var ON_OFF = 0;
+
+          if(counter < 200){
+              ON_OFF = (counter >> i) % 2;
+            //}
+          }
+
+
+          console.log((counter >> i) % 2);
+          if((counter >> i) % 2 != ((counter - 1) >> i) % 2)
+            devices.patch(device.id, {state: (ON_OFF ? 2: 0)});
+          //console.log("Device: " + device.id + " state: " + (ON_OFF ? 2: 0).toString());
+        }
+        counter++;
+        console.log(counter);
+      });
+    }, 40);
+}

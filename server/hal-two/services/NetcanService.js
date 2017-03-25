@@ -34,22 +34,22 @@ var start = function(){
 
   if(runtime.TEST){ //setup test loop
     setInterval(function(){
-      var newDevices = state.getDevices();
+      var newDeviceState = state.getDevices();
 
       if(counter < 100) {
         if((counter >> 4) % 2) {
-          newDevices[0].relay_one = counter % 2;
-          newDevices[0].relay_two = counter % 2;
-          newDevices[1].relay_one = counter % 2;
-          newDevices[1].relay_two = counter % 2;
+          newDeviceState[0].relay_one = counter % 2;
+          newDeviceState[0].relay_two = counter % 2;
+          newDeviceState[1].relay_one = counter % 2;
+          newDeviceState[1].relay_two = counter % 2;
         } else {
-          newDevices[0].relay_one = (counter >> 0) % 2;
-          newDevices[0].relay_two = (counter >> 1) % 2;
-          newDevices[1].relay_one = (counter >> 2) % 2;
-          newDevices[1].relay_two = (counter >> 3) % 2;
+          newDeviceState[0].relay_one = (counter >> 0) % 2;
+          newDeviceState[0].relay_two = (counter >> 1) % 2;
+          newDeviceState[1].relay_one = (counter >> 2) % 2;
+          newDeviceState[1].relay_two = (counter >> 3) % 2;
         }
         counter++;
-        state.setDevices(newDevices);
+        state.setDevices(newDeviceState);
       }
     }, 500);
   }
@@ -65,7 +65,6 @@ var start = function(){
           // console.log('writing: ' + command);
     		  client.write(command);
         }
-
     	})
   });
 }

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Home Automation Labs</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/themify-icons.css" rel="stylesheet">
+  <link href='css/dosis-font.css' rel='stylesheet' type='text/css'>
+  <script type="text/javascript" src="../scripts/socket.io.js"></script>
+  <script type="text/javascript" src="../scripts/core.min.js"></script>
+  <script type="text/javascript" src="../scripts/feathers.js"></script>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript">
+    function _ajax_request(url, data, callback, method) {
+      return jQuery.ajax({
+        url: url,
+        type: method,
+        data: data,
+        success: callback
+      });
+    }
+    jQuery.extend({
+      put: function(url, data, callback) {
+        return _ajax_request(url, data, callback, 'PUT');
+      }
+    });
+  </script>
+  <script type="text/javascript">
+    var statusOff = "img/BlackLight.png"
+    var statusOn = "img/GreenLight.png"
+    var statusPending = "img/YellowLight.png"
+    var statusError = "img/RedLight.png"
+    var statusSet = [statusOff, statusOn, statusPending, statusError];
+    var deviceState = {
+      "16": 0,
+      "17": 0,
+      "32": 0,
+      "33": 0
+    }
+    var deviceNextState = [2, 0, 3, 0];
+    var ip = location.host;
+    var socket = io(ip);
+    var app = feathers()
+      .configure(feathers.hooks())
+      .configure(feathers.socketio(socket));
+    var messageService = app.service('devices');
+    messageService.on('patched', function(message) {
+      console.log('Someone modified device:', message);
+      console.log('Status:', message.state + " ID:" + message.id);
+      var device = document.getElementById('device' + message.id).getElementsByTagName("img")[0];
+      device.src = statusSet[message.state];
+      deviceState[message.id] = message.state;
+    });
+  </script>
+  <script>
+    function changeState(tag) {
+      var device_id = tag.id.substring(6);
+      var device = {};
+      //  device.state=1;
+      device.state = deviceNextState[deviceState[device_id]];
+      $.ajax({
+        type: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        url: 'http://' + ip + '/devices/' + device_id,
+        data: JSON.stringify(device)
+      });
+      console.log("Patch: /devices/" + device_id + " state:" + device.state);
+    }
+  </script>
+</head>
+
+<body>
+  <div class="row me-row content-ct speaker" id="speakers">
+    <h2 class="row-title">HAL 2.0</h2>
+    <div id="device16" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Hallway</h3>
+      <p>Bottom of Stairs</p>
+    </div>
+    <div id="device17" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Hallway</h3>
+      <p>Top of Stairs</p>
+    </div>
+    <div id="device32" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Hallway</h3>
+      <p>Front Entrance</p>
+    </div>
+    <div id="device33" onclick="changeState(this)" class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Bedroom</h3>
+      <p>Bedroom Light</p>
+    </div>
+    <div class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Bedroom</h3>
+      <p>Closet Light</p>
+    </div>
+    <div class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Bedroom</h3>
+      <p>Bedside Lamp</p>
+    </div>
+    <div class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Bathroom</h3>
+      <p>Bathroom Light</p>
+    </div>
+    <div class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Bathroom</h3>
+      <p>Shower Light</p>
+    </div>
+    <div class="col-md-4 col-sm-6 feature">
+      <img src="img/BlackLight.png" class="speaker-img">
+      <h3>Bathroom</h3>
+      <p>Bathroom Fan</p>
+    </div>
+  </div>
+  </div>
+</body>

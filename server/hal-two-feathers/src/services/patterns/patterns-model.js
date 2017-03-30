@@ -25,6 +25,14 @@ module.exports = function(sequelize) {
     pattern_text:{
       type: Sequelize.STRING,
       allowNull : false
+    },
+    pattern_rule:{
+      type: Sequelize.STRING,
+      allowNull : false
+    },
+    status:{
+      type: Sequelize.INTEGER,
+      allowNull : false
     }
   }, {
     freezeTableName: true,

@@ -53,6 +53,25 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date()
     }]);
+
+    queryInterface.bulkInsert('patterns',[{
+      id: 1,
+      deviceId: 16,
+      pattern_text: "Every Monday at 1:15pm",
+      pattern_rule: "iCAL FORMAT THIS IS TEST",
+      status: 0,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: 2,
+      deviceId: 17,
+      pattern_text: "Every Tuesday at 6:15pm",
+      pattern_rule: "iCAL FORMAT THIS IS TEST",
+      status: 1,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }]);
   },
 
   down: function (queryInterface, Sequelize) {

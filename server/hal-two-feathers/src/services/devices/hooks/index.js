@@ -16,21 +16,23 @@ const myHook = options => { // always wrap in a function so you can pass options
 
     //netcan.update({state: hook.data.state, id : hook.id});
     
-    // if(hook.data.state == 2){
-    //   var service = hook.app.service('/devices');
-    //   //service.emit('updated', { status: 'updated' });
-    //   return new Promise(function(resolve, reject) {
-    //       setTimeout(function(){
-    //         console.log("waited 2 seconds for this device: ", hook.id);
-    //         if(Math.random() > 0.9){
-    //           service.patch(hook.id, {state: 3});
-    //         } else {
-    //           service.patch(hook.id, {state: 1});
-    //         }
-    //      }, 2500);
-    //     return resolve(hook);
-    //   });
-    // }
+    if(hook.app.get('development_mode')){
+      if(hook.data.state == 2){
+        var service = hook.app.service('/devices');
+        //service.emit('updated', { status: 'updated' });
+        return new Promise(function(resolve, reject) {
+            setTimeout(function(){
+              console.log("waited 2 seconds for this device: ", hook.id);
+              if(Math.random() > 0.9){
+                service.patch(hook.id, {state: 3});
+              } else {
+                service.patch(hook.id, {state: 1});
+              }
+           }, 750);
+          return resolve(hook);
+        });
+      }
+    }
 
     return Promise.resolve(hook); // A good convention is to always return a promise.
   };
